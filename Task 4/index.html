@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HomeWork 5.6</title>
+</head>
+<body>
+    <label for="number_input">Enter numbers between 1 and 300</label>
+    <input type="number" id = 'number_input' min="1" max='300'>
+    <label for="number_input_2"></label>
+    <input type="number" id = 'number_input_2' min="1" max='300'>
+    <button id="submit_button">Submit</button>
+    <div id="output" style="display: flex; flex-wrap: wrap; width:500px"></div>
+<script>
+    function displayResult(data){
+        const div_image = `
+          <div>
+            <img src='${data}' style="margin-top: 20px" '/>
+          </div>
+          `
+        output.innerHTML = div_image;
+    }
+    const input = document.getElementById('number_input');
+    const input_2 = document.getElementById('number_input_2');
+    const submit = document.getElementById('submit_button');
+
+    submit.addEventListener('click', () => {
+        const value = input.value;
+        const value_2 = input_2.value;
+        if ((value < 1 || value > 300) || (value_2 < 1 || value_2 > 300)) {
+            output.innerHTML = 'Одно из чисел вне диапозона!';
+        }
+        else {
+            fetch(`https://picsum.photos/${value}/${value_2}`)
+                .then((response) => displayResult(response.url))
+                .catch(()=>console.log('error'));
+    }})
+</script>
+</body>
+</html>

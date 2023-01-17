@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HomeWork 5.7</title>
+</head>
+<body>
+    <p><label for="number_input">Номер страницы: </label></p>
+    <input type="number" id = 'number_input' min="1" max='10'>
+    <p><label for="number_input_2">Лимит: </label></p>
+    <input type="number" id = 'number_input_2' min="1" max='10'>
+    <button id="submit_button">Submit</button>
+    <div id="output" style="display: flex; flex-wrap: wrap; width:500px"></div>
+    
+<script>
+    function displayResult(data){
+        let div_img_lst = '';
+        data.forEach(item => {
+            const div_image = `
+          <div style="width:200px; margin-top: 10px; margin-right: 10px">
+            <img src='${item.download_url}' style="display: block; width: 200px; height: 150px"'/>
+          </div>
+          `
+          div_img_lst = div_img_lst + div_image;
+        });
+        output.innerHTML = div_img_lst;
+    }
+    function loadFromStorage(){
+        Object.keys(localStorage).forEach(item => {
+            loadPictures(item, localStorage.getItem(item));
+        })
+    }
+    function loadPictures(value, value_2){
+        fetch(`https://picsum.photos/v2/list?page=${value}&limit=${value_2}`)
+            .then((response) => {
+                return response.json()
+            })
+            .then((data) => displayResult(data))
+            .catch(()=>console.log('error'));
+    }
+
+    const input = document.getElementById('number_input');
+    const input_2 = document.getElementById('number_input_2');
+    const submit = document.getElementById('submit_button');
+
+    submit.addEventListener('click', () => {
+        const value = input.value;
+        const value_2 = input_2.value;
+        if ((value < 1 || value > 10) && (value_2 < 1 || value_2 > 10)) {
+            output.innerHTML = 'Номер страницы и лимит вне диапозона от 1 до 10!';
+        }
+        else if (value < 1 || value > 10) output.innerHTML = 'Номер страницы вне диапозона от 1 до 10!';
+        else if (value_2 < 1 || value_2 > 10) output.innerHTML = 'Лимит вне диапозона от 1 до 10!';
+
+        else {
+            localStorage.clear();
+            localStorage.setItem(`${value}`, `${value_2}`);
+            loadPictures(value, value_2);
+    }})
+    window.onload = ()=> loadFromStorage();
+</script>
+</body>
+</html>

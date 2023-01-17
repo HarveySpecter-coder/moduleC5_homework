@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HomeWork 5.3</title>
+</head>
+<body>
+    <label for="number_input">Enter a number between 1 and 10</label>
+    <input type="number" id = 'number_input' min="1" max='10'>
+    <button id="submit_button">Submit</button>
+    <div id="output" style="display: flex; flex-wrap: wrap; width:500px"></div>
+<script>
+    function displayResult(data){
+        let cards = '';
+        data.forEach(item => {
+          const div_block = `
+          <div style="width:200px; margin: 20px">
+            <img src='${item.download_url}' style="display: block; width: 200px; height: 150px"'/>
+            <p>'${item.author}'</p>
+          </div>
+          `
+          cards = cards + div_block;
+        });
+        output.innerHTML = cards;
+    }
+    const input = document.getElementById('number_input');
+    const submit = document.getElementById('submit_button');
+
+    submit.addEventListener('click', () => {
+        const value = input.value;
+        if (value < 1 || value > 10) output.innerHTML = 'You entered a number outside the range of 1 to 10 !'
+        else {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `https://picsum.photos/v2/list?limit=${value}`, true);
+            xhr.onerror = () => alert('Error!');
+            xhr.onload = function() {
+                console.log(`Статус: ${xhr.status}`);
+                displayResult(JSON.parse(xhr.response));
+            }
+            xhr.onprogress = function (e){
+                console.log(`Загружено: ${e.loaded} из ${e.total}`);
+            };
+            xhr.send();
+    }})
+</script>
+</body>
+</html>
